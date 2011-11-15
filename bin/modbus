@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+
+require 'modbus-cli'
+
+Modbus::Cli::CommandLineRunner.run
+
