@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Modbus::Cli::VERSION
   s.authors     = ["Tallak Tveide"]
   s.email       = ["tallak@tveide.net"]
-  s.homepage    = ""
+  s.homepage    = "http://www.github.com/tallakt/modbus-cli"
   s.summary     = %q{Modbus command line}
   s.description = %q{Command line interface to communicate over Modbus TCP}
 
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   # s.add_development_dependency "rspec"
-  s.add_runtime_dependency "rmodbus", '>= 1.1.0'
-  s.add_runtime_dependency "clamp", '~ 0.3.0'
+  s.add_runtime_dependency "rmodbus", '= 1.1.0'
+  s.add_runtime_dependency "clamp", '= 0.3.0'
+  s.add_development_dependency "rspec", '= 2.7.0'
 end
