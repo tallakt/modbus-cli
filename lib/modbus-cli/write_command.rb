@@ -22,10 +22,33 @@ module Modbus
       def execute
         ModBus::TCPClient.connect(host) do |cl|
           cl.with_slave(DEFAULT_SLAVE) do |sl|
-            result = sl.write_holding_registers(address[:offset], values)
+            case address[:datatype]
+            when :bit
+              write_coils sl
+            when :word
+              write_words sl
+            end
           end
         end
       end
+
+      def write_coils(slave)
+        write_range.each_slice(1968) do |slice|
+          result = slave.write_multiple_coils(slice.first + address[:offset], values.values_at(*slice))
+        end
+      end
+
+      def write_words(slave)
+        write_range.each_slice(123) do |slice|
+          result = slave.write_holding_registers(slice.first + address[:offset], values.values_at(*slice))
+        end
+      end
+
+      def write_range
+        0..(values.count - 1)
+      end
+
+
     end
   end
 end

@@ -16,16 +16,20 @@ module Modbus
       end
 
       def read_registers(slave)
-        values = slave.read_holding_registers(address[:offset], count)
-        (1..count).zip(values).each do |pair|
-          puts "%MW#{ '%-7d' % (address[:offset] + pair.first)} #{'%6d' % pair.last}"
+        read_range.each_slice(125) do |slice|
+          values = slave.read_holding_registers(slice.first, slice.count)
+          slice.zip(values).each do |pair|
+            puts "%MW#{ '%-7d' % pair.first} #{'%6d' % pair.last}"
+          end
         end
       end
 
       def read_coils(slave)
-        values = slave.read_coils(address[:offset], count)
-        (1..count).zip(values).each do |pair|
-          puts "%M#{ '%-7d' % (address[:offset] + pair.first)} #{'%d' % pair.last}"
+        read_range.each_slice(2000) do |slice|
+          values = slave.read_coils(slice.first, slice.count)
+          slice.zip(values).each do |pair|
+            puts "%M#{ '%-7d' % pair.first} #{'%d' % pair.last}"
+          end
         end
       end
 
@@ -40,6 +44,10 @@ module Modbus
             end
           end
         end
+      end
+
+      def read_range
+        (address[:offset]..(address[:offset] + count - 1))
       end
     end
   end

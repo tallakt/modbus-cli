@@ -1,0 +1,52 @@
+Item Name
+Description
+400001
+When no spaces and no letters follow the register 
+number, the register contents are treated as a 16-bit 
+unsigned quantity.
+400001 S
+When a space and the letter "S" follow the register 
+number, the register contents are treated as a 16-bit 
+signed quantity.
+400001 I
+When a space and the letter "I" follow the register 
+number, the register contents are treated as a 32-bit 
+signed quantity. 
+This takes up two consecutive registers.
+Item Names
+75
+MBTCP DAServer User’s Guide
+Absolute Notation Item Names
+The MBTCP DAServer also uses another naming convention called the 
+Absolute Notation. This naming convention is independent of the PLC model 
+numbers.
+The Absolute naming convention allows access to the four Modbus data types, 
+each with an address from 0 to 65535. The data types are indicated by the item 
+name suffix characters.
+400001 L
+When a space and the letter "L" follow the register 
+number, the register contents are treated as a 32-bit 
+signed quantity. 
+400001 F
+When a space and the letter "F" follow the register 
+number, the register contents are treated as a floating-
+point quantity. 
+This takes up two consecutive registers.
+400001 U
+When a space and the letter "U" follow the register 
+number, the register contents are treated as a 32-bit 
+unsigned quantity.
+400001-400003 M
+When a space and the letter "M" follow the register 
+number or register number pair separated by a dash, the 
+register contents are treated as ASCII data. 
+Each register contains up to two (2) ASCII characters. 
+This example represents six (6) ASCII characters.
+300001:10
+When a colon and a number from 1 (one) to 16 follow 
+the register number, the register contents are treated as 
+discrete data. 
+This example represents bit 10 of the input register 
+300001.
+
+
