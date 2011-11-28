@@ -9,9 +9,11 @@ module Modbus
       address_parameter
       
       parameter 'COUNT', 'number of data to read', :attribute_name => :count do |c|
-        Integer(c)
-      end
+        result = Integer(c)
+        raise ArgumentError, 'Count must be positive' if result <= 0
+        result
 
+      end
 
       def read_registers(slave)
         values = slave.read_holding_registers(address[:offset], count)

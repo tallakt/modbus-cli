@@ -24,6 +24,15 @@ describe Modbus::Cli::WriteCommand do
     lambda { cmd.run %w(write 1.2.3.4 %MW1+00 ) }.should raise_exception(Clamp::UsageError)
   end
 
+
+  it 'should split large writes in chunks for words' do
+    fail
+  end
+
+  it 'should split large writes in chunks for coils' do
+    fail
+  end
+
 end
 
 
