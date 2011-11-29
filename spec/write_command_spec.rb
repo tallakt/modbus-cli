@@ -15,6 +15,19 @@ describe Modbus::Cli::WriteCommand do
     cmd.run %w(write HOST %MW100 1 2 3 4)
   end
 
+
+  it 'can write floating point numbers' do
+    client, slave = standard_connect_helper 'HOST'
+    slave.should_receive(:write_holding_registers).with(100, [52429, 17095, 52429, 17095])
+    cmd.run %w(write HOST %MF100 99.9 99.9)
+  end
+
+  it 'can write double word numbers' do
+    client, slave = standard_connect_helper 'HOST'
+    slave.should_receive(:write_holding_registers).with(100, [16959, 15, 16959, 15])
+    cmd.run %w(write HOST %MD100 999999 999999)
+  end
+
   it 'can write to coils' do
     client, slave = standard_connect_helper 'HOST'
     slave.should_receive(:write_multiple_coils).with(100, [1, 0, 1, 0, 1, 0, 0, 1, 1])
@@ -40,9 +53,9 @@ describe Modbus::Cli::WriteCommand do
 
   it 'should split large writes in chunks for coils' do
     client, slave = standard_connect_helper 'HOST'
-    slave.should_receive(:write_multiple_coils).with(100, (1..1968).to_a)
-    slave.should_receive(:write_multiple_coils).with(2068, (1969..2000).to_a)
-    cmd.run %w(write HOST %M100) + (1..2000).to_a
+    slave.should_receive(:write_multiple_coils).with(100, [0, 1] * 984)
+    slave.should_receive(:write_multiple_coils).with(2068, [0, 1] * 16)
+    cmd.run %w(write HOST %M100) + [0, 1] * 1000
   end
 end
 
