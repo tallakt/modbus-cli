@@ -9,6 +9,7 @@ module Modbus
       MAX_WRITE_COILS = 1968
       MAX_WRITE_WORDS = 123
 
+      datatype_options
       host_parameter
       address_parameter
 
@@ -19,6 +20,8 @@ module Modbus
           int_parameter vv, 0, 1
         when :word
           int_parameter vv, 0, 0xffff
+        when :int
+          int_parameter vv, -32768, 32767
         when :dword
           int_parameter vv, 0, 0xffffffff
         when :float
@@ -34,7 +37,7 @@ module Modbus
             case addr_type
             when :bit
               write_coils sl
-            when :word
+            when :word, :int
               write_words sl
             when :float
               write_floats sl
@@ -52,7 +55,7 @@ module Modbus
       end
 
       def write_words(slave)
-        sliced_write_registers(slave, values)
+        sliced_write_registers(slave, values.pack('S*').unpack('S*'))
       end
 
       def write_floats(slave)

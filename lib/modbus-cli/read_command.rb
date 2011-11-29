@@ -9,6 +9,7 @@ module Modbus
       MAX_READ_COIL_COUNT = 2000
       MAX_READ_WORD_COUNT = 125
 
+      datatype_options
       host_parameter
       address_parameter
       
@@ -33,8 +34,12 @@ module Modbus
         end
       end
 
-      def read_registers(slave)
-        read_range.zip(read_data_words(slave)).each do |pair|
+      def read_registers(slave, options = {})
+        data = read_data_words(slave)
+        if options[:int]
+          data = data.pack('S').unpack('s')
+        end
+        read_range.zip(data).each do |pair|
           puts "%MW#{ '%-7d' % pair.first} #{'%6d' % pair.last}"
         end
       end
@@ -54,6 +59,8 @@ module Modbus
             case addr_type
             when :bit
               read_coils(sl)
+            when :int
+              read_registers(sl, :int => true)
             when :word
               read_registers(sl)
             when :float

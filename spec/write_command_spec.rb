@@ -57,6 +57,13 @@ describe Modbus::Cli::WriteCommand do
     slave.should_receive(:write_multiple_coils).with(2068, [0, 1] * 16)
     cmd.run %w(write HOST %M100) + [0, 1] * 1000
   end
+
+  it 'can write to registers as ints' do
+    client, slave = standard_connect_helper 'HOST'
+    slave.should_receive(:write_holding_registers).with(100, [0xffff])
+    cmd.run %w(write --int HOST %MW100 -1)
+  end
+
 end
 
 

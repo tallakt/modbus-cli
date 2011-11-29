@@ -64,6 +64,14 @@ describe Modbus::Cli::ReadCommand do
     slave.should_receive(:read_coils).with(2100, 1000).and_return([1, 0] * 500)
     cmd.run %w(read 1.2.3.4 %M100 3000)
   end
+
+  it 'can read registers as ints' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).with(100, 1).and_return([0xffff])
+    cmd.run %w(read --int 1.2.3.4 %MW100 1)
+    stdout.should match(/^\s*%MW100\s*-1$/)
+  end
+
 end
 
 
