@@ -10,6 +10,8 @@ module Modbus
       MAX_WRITE_WORDS = 123
 
       datatype_options
+      format_options
+      slave_option
       host_parameter
       address_parameter
 
@@ -33,7 +35,7 @@ module Modbus
 
       def execute
         ModBus::TCPClient.connect(host) do |cl|
-          cl.with_slave(DEFAULT_SLAVE) do |sl|
+          cl.with_slave(slave) do |sl|
             case addr_type
             when :bit
               write_coils sl
@@ -48,33 +50,33 @@ module Modbus
         end
       end
 
-      def write_coils(slave)
+      def write_coils(sl)
         write_range.each_slice(MAX_WRITE_COILS) do |slice|
-          result = slave.write_multiple_coils(slice.first + addr_offset, values.values_at(*slice))
+          result = sl.write_multiple_coils(slice.first + addr_offset, values.values_at(*slice))
         end
       end
 
-      def write_words(slave)
-        sliced_write_registers(slave, values.pack('S*').unpack('S*'))
+      def write_words(sl)
+        sliced_write_registers(sl, values.pack('S*').unpack('S*'))
       end
 
-      def write_floats(slave)
-        pack_and_write slave, 'g'
+      def write_floats(sl)
+        pack_and_write sl, 'g'
       end
 
-      def write_dwords(slave)
-        pack_and_write slave, 'N'
+      def write_dwords(sl)
+        pack_and_write sl, 'N'
       end
 
-      def sliced_write_registers(slave, data)
+      def sliced_write_registers(sl, data)
         write_range.each_slice(MAX_WRITE_WORDS) do |slice|
-          result = slave.write_holding_registers(slice.first + addr_offset, data.values_at(*slice))
+          result = sl.write_holding_registers(slice.first + addr_offset, data.values_at(*slice))
         end
       end
 
-      def pack_and_write(slave, format)
+      def pack_and_write(sl, format)
         # the word ordering is wrong. calling reverse two times effectively swaps every pair
-        sliced_write_registers(slave, values.reverse.pack("#{format}*").unpack('n*').reverse)
+        sliced_write_registers(sl, values.reverse.pack("#{format}*").unpack('n*').reverse)
       end
 
       def write_range

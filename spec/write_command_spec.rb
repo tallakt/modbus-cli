@@ -64,6 +64,43 @@ describe Modbus::Cli::WriteCommand do
     cmd.run %w(write --int HOST %MW100 -1)
   end
 
+  it 'can write to registers as floats' do
+    client, slave = standard_connect_helper 'HOST'
+    slave.should_receive(:write_holding_registers).with(100, [52429, 17095])
+    cmd.run %w(write --float HOST %MW100 99.9)
+  end
+
+  it 'can write to registers as double words' do
+    client, slave = standard_connect_helper 'HOST'
+    slave.should_receive(:write_holding_registers).with(100, [16959, 15])
+    cmd.run %w(write --dword HOST %MW100 999999)
+  end
+
+  it 'can write to registers as words' do
+    client, slave = standard_connect_helper 'HOST'
+    slave.should_receive(:write_holding_registers).with(100, [99])
+    cmd.run %w(write --word HOST %MF100 99)
+  end
+
+  it 'can write to registers using Modicon addressing' do
+    client, slave = standard_connect_helper 'HOST'
+    slave.should_receive(:write_holding_registers).with(100, [1, 2, 3, 4])
+    cmd.run %w(write HOST 400101 1 2 3 4)
+  end
+
+  it 'can write to coils using Modicon addressing' do
+    client, slave = standard_connect_helper 'HOST'
+    slave.should_receive(:write_multiple_coils).with(100, [1, 0, 1, 0, 1, 0, 0, 1, 1])
+    cmd.run %w(write HOST 101 1 0 1 0 1 0 0 1 1)
+  end
+
+  it 'has a --slave parameter' do
+    client = mock 'client'
+    ModBus::TCPClient.should_receive(:connect).with('X').and_yield(client)
+    client.should_receive(:with_slave).with(99)
+    cmd.run %w(write --slave 99 X 101 1)
+  end
+
 end
 
 

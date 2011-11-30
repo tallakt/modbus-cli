@@ -18,6 +18,7 @@ require 'rmodbus/tcp_server'
 require 'modbus-cli/version'
 require 'modbus-cli/read_command'
 require 'modbus-cli/write_command'
+require 'modbus-cli/dump_command'
 
 module Modbus
   module Cli
@@ -26,6 +27,7 @@ module Modbus
     class CommandLineRunner < Clamp::Command
       subcommand 'read', 'read from the device', ReadCommand
       subcommand 'write', 'write to the device', WriteCommand
+      subcommand 'dump', 'copy contents of read file to the device', DumpCommand
     end
   end
 end

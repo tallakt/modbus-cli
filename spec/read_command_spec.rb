@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'yaml'
 
 
 
@@ -71,6 +72,81 @@ describe Modbus::Cli::ReadCommand do
     cmd.run %w(read --int 1.2.3.4 %MW100 1)
     stdout.should match(/^\s*%MW100\s*-1$/)
   end
+
+  it 'can read registers as floats' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).with(100, 2).and_return([0,0])
+    cmd.run %w(read --float 1.2.3.4 %MW100 1)
+  end
+
+  it 'can read registers as dwords' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).with(100, 2).and_return([0,0])
+    cmd.run %w(read --dword 1.2.3.4 %MW100 1)
+  end
+
+  it 'can read registers as words' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).with(100, 1).and_return([0])
+    cmd.run %w(read --word 1.2.3.4 %MD100 1)
+  end
+
+  it 'accepts Modicon addresses for coils' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_coils).with(100, 10).and_return([1, 0] * 5)
+    cmd.run %w(read 1.2.3.4 101 10)
+    stdout.should match(/^\s*106\s*0$/)
+  end
+
+  it 'accepts Modicon addresses for registers' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).with(100, 10).and_return((0..9).to_a)
+    cmd.run %w(read 1.2.3.4 400101 10)
+    stdout.should match(/^\s*400106\s*5$/)
+  end
+
+
+  it 'should accept the --modicon option to force modicon output' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).with(100, 10).and_return((0..9).to_a)
+    cmd.run %w(read --modicon 1.2.3.4 %MW100 10)
+    stdout.should match(/^\s*400106\s*5$/)
+  end
+
+  it 'should accept the --schneider option to force schneider output' do 
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).with(100, 10).and_return((0..9).to_a)
+    cmd.run %w(read --schneider 1.2.3.4 400101 10)
+    stdout.should match(/^\s*%MW105\s*5$/)
+  end
+
+  it 'has a --slave parameter' do
+    client = mock 'client'
+    ModBus::TCPClient.should_receive(:connect).with('X').and_yield(client)
+    client.should_receive(:with_slave).with(99)
+    cmd.run %w(read --slave 99 X 101 1)
+  end
+
+  it 'can write the output from reading registers to a yaml file using the -o <filename> parameter' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).with(100, 1).and_return([1])
+    file_mock = mock('file')
+    File.should_receive(:open).and_yield(file_mock)
+    file_mock.should_receive(:puts).with({:host => '1.2.3.4', :offset => '400101', :data => [1]}.to_yaml)
+    cmd.run %w(read --output filename.yml 1.2.3.4 %MW100 1)
+    stdout.should_not match(/./)
+  end
+
+  it 'can write the output from reading coils to a yaml file using the -o <filename> parameter' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_coils).with(100, 1).and_return([1])
+    file_mock = mock('file')
+    File.should_receive(:open).and_yield(file_mock)
+    file_mock.should_receive(:puts).with({:host => '1.2.3.4', :offset => '101', :data => [1]}.to_yaml)
+    cmd.run %w(read --output filename.yml 1.2.3.4 %M100 1)
+    stdout.should_not match(/./)
+  end
+
 
 end
 
