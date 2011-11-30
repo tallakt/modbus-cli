@@ -132,7 +132,7 @@ describe Modbus::Cli::ReadCommand do
     slave.should_receive(:read_holding_registers).with(100, 1).and_return([1])
     file_mock = mock('file')
     File.should_receive(:open).and_yield(file_mock)
-    file_mock.should_receive(:puts).with({:host => '1.2.3.4', :offset => '400101', :data => [1]}.to_yaml)
+    file_mock.should_receive(:puts).with({:host => '1.2.3.4', :slave => 1, :offset => '400101', :data => [1]}.to_yaml)
     cmd.run %w(read --output filename.yml 1.2.3.4 %MW100 1)
     stdout.should_not match(/./)
   end
@@ -142,7 +142,7 @@ describe Modbus::Cli::ReadCommand do
     slave.should_receive(:read_coils).with(100, 1).and_return([1])
     file_mock = mock('file')
     File.should_receive(:open).and_yield(file_mock)
-    file_mock.should_receive(:puts).with({:host => '1.2.3.4', :offset => '101', :data => [1]}.to_yaml)
+    file_mock.should_receive(:puts).with({:host => '1.2.3.4', :slave => 1, :offset => '101', :data => [1]}.to_yaml)
     cmd.run %w(read --output filename.yml 1.2.3.4 %M100 1)
     stdout.should_not match(/./)
   end

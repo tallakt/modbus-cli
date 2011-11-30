@@ -15,6 +15,7 @@ describe Modbus::Cli::CommandLineRunner do
     c.help.should match /usage:/i
     c.help.should match /read/
     c.help.should match /write/
+    c.help.should match /dump/
   end
 end
 

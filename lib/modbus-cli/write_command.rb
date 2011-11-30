@@ -6,8 +6,6 @@ module Modbus
       extend CommandsCommon::ClassMethods
       include CommandsCommon
 
-      MAX_WRITE_COILS = 1968
-      MAX_WRITE_WORDS = 123
 
       datatype_options
       format_options
@@ -51,13 +49,11 @@ module Modbus
       end
 
       def write_coils(sl)
-        write_range.each_slice(MAX_WRITE_COILS) do |slice|
-          result = sl.write_multiple_coils(slice.first + addr_offset, values.values_at(*slice))
-        end
+        sliced_write_coils sl, addr_offset, values
       end
 
       def write_words(sl)
-        sliced_write_registers(sl, values.pack('S*').unpack('S*'))
+        sliced_write_registers sl, addr_offset, values.pack('S*').unpack('S*')
       end
 
       def write_floats(sl)
@@ -68,19 +64,9 @@ module Modbus
         pack_and_write sl, 'N'
       end
 
-      def sliced_write_registers(sl, data)
-        write_range.each_slice(MAX_WRITE_WORDS) do |slice|
-          result = sl.write_holding_registers(slice.first + addr_offset, data.values_at(*slice))
-        end
-      end
-
       def pack_and_write(sl, format)
         # the word ordering is wrong. calling reverse two times effectively swaps every pair
-        sliced_write_registers(sl, values.reverse.pack("#{format}*").unpack('n*').reverse)
-      end
-
-      def write_range
-        0..(values.count * data_size - 1)
+        sliced_write_registers(sl, addr_offset, values.reverse.pack("#{format}*").unpack('n*').reverse)
       end
 
       def int_parameter(vv, min, max)

@@ -1,7 +1,11 @@
 module Modbus
   module Cli
     module CommandsCommon
+      
+      MAX_WRITE_COILS = 1968
+      MAX_WRITE_WORDS = 123
       DEFAULT_SLAVE = 1
+
       module ClassMethods
 
         def host_parameter
@@ -107,6 +111,19 @@ module Modbus
           address[:format]
         end
       end
+
+      def sliced_write_registers(sl, offset, data)
+        (0..(data.count - 1)).each_slice(MAX_WRITE_WORDS) do |slice|
+          result = sl.write_holding_registers(slice.first + offset, data.values_at(*slice))
+        end
+      end
+
+      def sliced_write_coils(sl, offset, data)
+        (0..(data.count - 1)).each_slice(MAX_WRITE_COILS) do |slice|
+          result = sl.write_multiple_coils(slice.first + offset, data.values_at(*slice))
+        end
+      end
+
     end
   end
 end

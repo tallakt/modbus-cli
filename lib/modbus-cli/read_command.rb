@@ -58,7 +58,7 @@ module Modbus
 
       def write_data_to_file(data)
         File.open(output, 'w') do |file|
-          file.puts({ :host => host, :offset => address_to_s(addr_offset, :modicon), :data => data }.to_yaml)
+          file.puts({ :host => host, :slave => slave, :offset => address_to_s(addr_offset, :modicon), :data => data }.to_yaml)
         end
       end
 
