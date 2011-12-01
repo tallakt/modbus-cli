@@ -14,16 +14,16 @@ module Modbus
 
 
         def address_parameter
-          parameter 'ADDRESS', 'Start address, in Schneider format (eg %M100, %MW100)', :attribute_name => :address do |a|
+          parameter 'ADDRESS', 'Start address (eg %M100, %MW100, 101, 400101)', :attribute_name => :address do |a|
             schneider_match(a) || modicon_match(a) || raise(ArgumentError, "Illegal address #{a}")
           end
         end
 
         def datatype_options
-          option ["-w", "--word"], :flag, "use signed 16 bit integers"
+          option ["-w", "--word"], :flag, "use unsigned 16 bit integers"
           option ["-i", "--int"], :flag, "use signed 16 bit integers"
-          option ["-d", "--dword"], :flag, "use signed 16 bit integers"
-          option ["-f", "--float"], :flag, "use signed 16 bit integers"
+          option ["-d", "--dword"], :flag, "use unsigned 32 bit integers"
+          option ["-f", "--float"], :flag, "use signed 32 bit floating point values"
         end
 
         def format_options

@@ -20,7 +20,8 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   # s.add_development_dependency "rspec"
-  s.add_runtime_dependency "rmodbus", '= 1.1.0'
-  s.add_runtime_dependency "clamp", '= 0.3.0'
-  s.add_development_dependency "rspec", '= 2.7.0'
+  s.add_runtime_dependency "rmodbus", '~> 1.1'
+  s.add_runtime_dependency "clamp", '~> 0.3'
+  s.add_development_dependency "rspec", '~> 2.7'
+  s.add_development_dependency "rake", '~> 0.9'
 end
