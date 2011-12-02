@@ -123,7 +123,7 @@ module Modbus
 
 
       def nice_float(str)
-        m = str.match /(.*[.][0-9])0*/
+        m = str.match /^(.*[.][0-9])0*$/
         if m
           m[1]
         else

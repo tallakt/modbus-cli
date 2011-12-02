@@ -18,11 +18,19 @@ describe Modbus::Cli::ReadCommand do
   end
 
 
+
   it 'can read floating point numbers' do
     client, slave = standard_connect_helper '1.2.3.4'
     slave.should_receive(:read_holding_registers).with(100, 4).and_return([52429, 17095, 52429, 17095])
     cmd.run %w(read 1.2.3.4 %MF100 2)
     stdout.should match(/^\s*%MF102\s*99[.]9(00[0-9]*)?$/)
+  end
+
+  it 'should display numbers with good precision' do
+    client, slave = standard_connect_helper '1.2.3.4'
+    slave.should_receive(:read_holding_registers).and_return([1049, 16286])
+    cmd.run %w(read 1.2.3.4 %MF100 1)
+    stdout.should match(/^\s*%MF100\s*1[.]2345?$/)
   end
 
   it 'can read double word numbers' do
