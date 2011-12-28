@@ -34,10 +34,10 @@ def stub_tcpip
 end
 
 
-def standard_connect_helper(address)
+def standard_connect_helper(address, port)
   client = mock 'client'
   slave = mock 'slave'
-  ModBus::TCPClient.should_receive(:connect).with(address).and_yield(client)
+  ModBus::TCPClient.should_receive(:connect).with(address, port).and_yield(client)
   client.should_receive(:with_slave).with(1).and_yield(slave)
   return client, slave
 end
