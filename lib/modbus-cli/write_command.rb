@@ -11,6 +11,7 @@ module Modbus
       format_options
       slave_option
       host_parameter
+      host_option
       address_parameter
 
       parameter 'VALUES ...', 'values to write, nonzero counts as true for discrete values', :attribute_name => :values do |vv|
@@ -32,7 +33,7 @@ module Modbus
 
 
       def execute
-        ModBus::TCPClient.connect(host) do |cl|
+        ModBus::TCPClient.connect(host, port) do |cl|
           cl.with_slave(slave) do |sl|
             case addr_type
             when :bit
