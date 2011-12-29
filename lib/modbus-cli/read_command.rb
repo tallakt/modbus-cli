@@ -14,6 +14,7 @@ module Modbus
       format_options
       slave_option
       host_parameter
+      host_option
       address_parameter
       option ["-o", "--output"], 'FILE', "write results to file FILE"
       
@@ -58,7 +59,7 @@ module Modbus
 
       def write_data_to_file(data)
         File.open(output, 'w') do |file|
-          file.puts({ :host => host, :slave => slave, :offset => address_to_s(addr_offset, :modicon), :data => data }.to_yaml)
+          file.puts({ :host => host, :port => port, :slave => slave, :offset => address_to_s(addr_offset, :modicon), :data => data }.to_yaml)
         end
       end
 
@@ -70,7 +71,7 @@ module Modbus
       end
 
       def execute
-        ModBus::TCPClient.connect(host) do |cl|
+        ModBus::TCPClient.connect(host, port) do |cl|
           cl.with_slave(slave) do |sl|
             if output then
               case addr_type
