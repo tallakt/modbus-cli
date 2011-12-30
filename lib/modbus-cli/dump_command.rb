@@ -12,6 +12,7 @@ module Modbus
           YAML.load_file(filename).dup.tap do |ff|
             #parameter takes presedence
             ff[:host] = host || ff[:host]
+            ff[:port] = port || ff[:port]
             ff[:slave] = slave || ff[:slave]
             ff[:offset] = offset || ff[:offset]
           end
@@ -19,6 +20,7 @@ module Modbus
       end
 
       option ["-h", "--host"], 'ADDR', "use the address/hostname ADDR instead of the stored one"
+      host_option
 
       option ["-s", "--slave"], 'ID', "use slave ID instead of the stored one" do |s|
         Integer(s).tap {|slave| raise ArgumentError 'Slave address should be in the range 0..255' unless (0..255).member? slave }
@@ -36,7 +38,7 @@ module Modbus
 
       def execute_host(host_id)
         slave_ids =   files.select {|d| d[:host] == host_id }.map {|d| d[:slave] }.sort.uniq
-        ModBus::TCPClient.connect(host_id) do |client|
+        ModBus::TCPClient.connect(host_id, port) do |client|
           slave_ids.each {|slave_id| execute_slave host_id, slave_id, client }
         end
       end
