@@ -38,7 +38,7 @@ module Modbus
         end
 
         def host_option
-          option ["-p", "--port"], 'PORT', "use TCP PORT (default 502)", :default => 502
+          option ["-p", "--port"], 'PORT', "use TCP port", :default => 502
         end
 
         def output_option
