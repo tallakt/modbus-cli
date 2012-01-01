@@ -31,6 +31,8 @@ module Modbus
         o
       end
 
+      debug_option
+
       def execute
         host_ids = files.map {|d| d[:host] }.sort.uniq
         host_ids.each {|host_id| execute_host host_id }
@@ -45,6 +47,7 @@ module Modbus
 
       def execute_slave(host_id, slave_id, client)
         client.with_slave(slave_id) do |slave|
+            slave.debug = true if debug?
             files.select {|d| d[:host] == host_id && d[:slave] == slave_id }.each do |file_data|
             execute_single_file slave, file_data
           end

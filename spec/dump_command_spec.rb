@@ -95,6 +95,18 @@ describe Modbus::Cli::DumpCommand do
     slave.should_receive(:write_holding_registers).with(100, [4, 5, 6])
     cmd.run %w(dump --offset %MW100 dump.yml)
   end
+
+   it 'has a --debug flag' do
+    client = mock 'client'
+    slave = mock 'slave'
+    YAML.should_receive(:load_file).with('dump.yml').and_return(:host => '1.2.3.4', :port => 502, :slave => 5, :offset => 400123, :data => [4, 5, 6])
+    ModBus::TCPClient.should_receive(:connect).with('1.2.3.4', 502).and_yield(client)
+    client.should_receive(:with_slave).with(5).and_yield(slave)
+    slave.should_receive(:write_holding_registers).with(122, [4, 5, 6])
+    slave.should_receive(:debug=).with(true)
+    cmd.run %w(dump --debug dump.yml)
+  end
+
 end
 
 
