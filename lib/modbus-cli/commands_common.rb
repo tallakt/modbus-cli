@@ -43,6 +43,10 @@ module Modbus
 
         def output_option
         end
+
+        def debug_option
+          option ["-D", "--debug"], :flag, "show debug messages"
+        end
       end
 
 
