@@ -13,6 +13,7 @@ module Modbus
       host_parameter
       host_option
       address_parameter
+      debug_option
 
       parameter 'VALUES ...', 'values to write, nonzero counts as true for discrete values', :attribute_name => :values do |vv|
         case addr_type
@@ -35,6 +36,8 @@ module Modbus
       def execute
         ModBus::TCPClient.connect(host, port) do |cl|
           cl.with_slave(slave) do |sl|
+            sl.debug = true if debug?
+
             case addr_type
             when :bit
               write_coils sl

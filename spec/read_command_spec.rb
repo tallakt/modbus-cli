@@ -155,6 +155,13 @@ describe Modbus::Cli::ReadCommand do
     stdout.should_not match(/./)
   end
 
+  it 'has a --debug flag' do
+    client, slave = standard_connect_helper '1.2.3.4', 502
+    slave.should_receive(:read_holding_registers).with(100, 10).and_return((0..9).to_a)
+    slave.should_receive(:debug=).with(true)
+    cmd.run %w(read --debug 1.2.3.4 %MW100 10)
+  end
+
 
 end
 

@@ -17,6 +17,7 @@ module Modbus
       host_option
       address_parameter
       option ["-o", "--output"], 'FILE', "write results to file FILE"
+      debug_option
       
       parameter 'COUNT', 'number of data to read', :attribute_name => :count do |c|
         result = Integer(c)
@@ -73,6 +74,8 @@ module Modbus
       def execute
         ModBus::TCPClient.connect(host, port) do |cl|
           cl.with_slave(slave) do |sl|
+            sl.debug = true if debug?
+
             if output then
               case addr_type
               when :bit

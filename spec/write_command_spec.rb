@@ -101,6 +101,13 @@ describe Modbus::Cli::WriteCommand do
     cmd.run %w(write --slave 99 X 101 1)
   end
 
+  it 'has a --debug flag' do
+    client, slave = standard_connect_helper 'HOST', 502
+    slave.should_receive(:debug=).with(true)
+    slave.should_receive(:write_multiple_coils)
+    cmd.run %w(write --debug HOST 101 1)
+  end
+
 end
 
 
