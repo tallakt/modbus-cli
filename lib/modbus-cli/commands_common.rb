@@ -2,7 +2,7 @@ module Modbus
   module Cli
     module CommandsCommon
       
-      MAX_WRITE_COILS = 1968
+      MAX_WRITE_COILS = 800
       MAX_WRITE_WORDS = 123
       DEFAULT_SLAVE = 1
 

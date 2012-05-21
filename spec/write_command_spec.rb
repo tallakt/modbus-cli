@@ -53,8 +53,9 @@ describe Modbus::Cli::WriteCommand do
 
   it 'should split large writes in chunks for coils' do
     client, slave = standard_connect_helper 'HOST', 502
-    slave.should_receive(:write_multiple_coils).with(100, [0, 1] * 984)
-    slave.should_receive(:write_multiple_coils).with(2068, [0, 1] * 16)
+    slave.should_receive(:write_multiple_coils).with(100, [0, 1] * 400)
+    slave.should_receive(:write_multiple_coils).with(900, [0, 1] * 400)
+    slave.should_receive(:write_multiple_coils).with(1700, [0, 1] * 200)
     cmd.run %w(write HOST %M100) + [0, 1] * 1000
   end
 
