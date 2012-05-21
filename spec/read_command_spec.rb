@@ -69,7 +69,8 @@ describe Modbus::Cli::ReadCommand do
 
   it 'should split large reads into smaller chunks for coils' do
     client, slave = standard_connect_helper '1.2.3.4', 502
-    slave.should_receive(:read_coils).with(100, 2000).and_return([1, 0] * 1000)
+    slave.should_receive(:read_coils).with(100, 1000).and_return([1, 0] * 500)
+    slave.should_receive(:read_coils).with(1100, 1000).and_return([1, 0] * 500)
     slave.should_receive(:read_coils).with(2100, 1000).and_return([1, 0] * 500)
     cmd.run %w(read 1.2.3.4 %M100 3000)
   end

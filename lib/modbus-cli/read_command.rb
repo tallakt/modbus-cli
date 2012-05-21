@@ -7,7 +7,7 @@ module Modbus
       extend CommandsCommon::ClassMethods
       include CommandsCommon
 
-      MAX_READ_COIL_COUNT = 2000
+      MAX_READ_COIL_COUNT = 1000
       MAX_READ_WORD_COUNT = 125
 
       datatype_options
