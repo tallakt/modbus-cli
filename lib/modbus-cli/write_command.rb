@@ -14,6 +14,7 @@ module Modbus
       host_option
       address_parameter
       debug_option
+      timeout_option
 
       parameter 'VALUES ...', 'values to write, nonzero counts as true for discrete values', :attribute_name => :values do |vv|
         case addr_type
@@ -37,6 +38,7 @@ module Modbus
         ModBus::TCPClient.connect(host, port) do |cl|
           cl.with_slave(slave) do |sl|
             sl.debug = true if debug?
+            sl.read_retry_timeout = timeout if timeout
 
             case addr_type
             when :bit

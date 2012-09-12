@@ -163,6 +163,13 @@ describe Modbus::Cli::ReadCommand do
     cmd.run %w(read --debug 1.2.3.4 %MW100 10)
   end
 
+  it 'has a --timeout flag' do
+    client, slave = standard_connect_helper '1.2.3.4', 502
+    slave.should_receive(:read_retry_timeout=).with(99)
+    slave.should_receive(:read_holding_registers).with(100, 10).and_return((0..9).to_a)
+    cmd.run %w(read --timeout 99 1.2.3.4 %MW100 10)
+  end
+
 
 end
 

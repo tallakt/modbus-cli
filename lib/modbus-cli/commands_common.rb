@@ -47,6 +47,12 @@ module Modbus
         def debug_option
           option ["-D", "--debug"], :flag, "show debug messages"
         end
+
+        def timeout_option
+          option ["-T", "--timeout"], 'TIMEOUT', "Specify the timeout in seconds when talking to the slave" do |t|
+            Integer(t)
+          end
+        end
       end
 
 

@@ -109,6 +109,13 @@ describe Modbus::Cli::WriteCommand do
     cmd.run %w(write --debug HOST 101 1)
   end
 
+  it 'has a --timeout flag' do
+    client, slave = standard_connect_helper 'HOST', 502
+    slave.should_receive(:read_retry_timeout=).with(99)
+    slave.should_receive(:write_multiple_coils)
+    cmd.run %w(write --timeout 99 HOST 101 1)
+  end
+
 end
 
 
