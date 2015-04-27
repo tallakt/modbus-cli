@@ -21,7 +21,7 @@ The pure ruby gem should run on most rubies.
 Quick Start
 -----------
 
-Lets start by reading five words from our device startig from address %MW100. 
+Let's start by reading five words from our device starting from address %MW100. 
 
     $ modbus read 192.168.0.1 %MW100 5
 
@@ -187,7 +187,7 @@ License
 
     (The MIT License)
 
-    Copyright (C) 2011 Tallak Tveide
+    Copyright (C) 2011-2015 Tallak Tveide
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to
