@@ -96,7 +96,7 @@ describe Modbus::Cli::WriteCommand do
   end
 
   it 'has a --slave parameter' do
-    client = mock 'client'
+    client = double 'client'
     ModBus::TCPClient.should_receive(:connect).with('X', 502).and_yield(client)
     client.should_receive(:with_slave).with(99)
     cmd.run %w(write --slave 99 X 101 1)

@@ -8,20 +8,20 @@ describe Modbus::Cli::DumpCommand do
   end
 
   it 'reads the file and write the contents to the original device' do
-    client = mock 'client'
-    slave = mock 'slave'
+    client = double 'client'
+    slave = double 'slave'
     YAML.should_receive(:load_file).with('dump.yml').and_return(:host => '1.2.3.4', :port => 502, :slave => 5, :offset => 400123, :data => [4, 5, 6])
     ModBus::TCPClient.should_receive(:connect).with('1.2.3.4', 502).and_yield(client)
     client.should_receive(:with_slave).with(5).and_yield(slave)
     slave.should_receive(:write_holding_registers).with(122, [4, 5, 6])
-    cmd.run %w(dump dump.yml)
+    cmd.run %w(dump dump.yml) 
   end
 
   it 'can read two files from separate hosts' do
-    client1 = mock 'client1'
-    client2 = mock 'client2'
-    slave1 = mock 'slave1'
-    slave2 = mock 'slave2'
+    client1 = double 'client1'
+    client2 = double 'client2'
+    slave1 = double 'slave1'
+    slave2 = double 'slave2'
     yml = {:host => 'X', :slave => 5, :offset => 400010, :data => [99]}
     YAML.should_receive(:load_file).with('a.yml').and_return(yml)
     YAML.should_receive(:load_file).with('b.yml').and_return(yml.dup.tap {|y| y[:host] = 'Y' })
@@ -35,9 +35,9 @@ describe Modbus::Cli::DumpCommand do
   end
 
   it 'can dump two files from separate slaves on same host' do
-    client1 = mock 'client1'
-    slave1 = mock 'slave1'
-    slave2 = mock 'slave2'
+    client1 = double 'client1'
+    slave1 = double 'slave1'
+    slave2 = double 'slave2'
     yml = {:host => 'X', :slave => 5, :offset => 400010, :data => [99]}
     YAML.should_receive(:load_file).with('a.yml').and_return(yml)
     YAML.should_receive(:load_file).with('b.yml').and_return(yml.dup.tap {|y| y[:slave] = 99 })
@@ -50,8 +50,8 @@ describe Modbus::Cli::DumpCommand do
   end
 
   it 'can dump two files from one slave' do
-    client1 = mock 'client1'
-    slave1 = mock 'slave1'
+    client1 = double 'client1'
+    slave1 = double 'slave1'
     yml = {:host => 'X', :slave => 5, :offset => 400010, :data => [99]}
     YAML.should_receive(:load_file).with('a.yml').and_return(yml)
     YAML.should_receive(:load_file).with('b.yml').and_return(yml.dup)
@@ -69,7 +69,7 @@ describe Modbus::Cli::DumpCommand do
   end
 
   it 'accepts the --slave <id> parameter' do
-    client = mock 'client'
+    client = double 'client'
     YAML.should_receive(:load_file).with('dump.yml').and_return(:host => '1.2.3.4', :port => 502, :slave => 5, :offset => 123, :data => [4, 5, 6])
     ModBus::TCPClient.should_receive(:connect).with('1.2.3.4', 502).and_yield(client)
     client.should_receive(:with_slave).with(99)
@@ -77,8 +77,8 @@ describe Modbus::Cli::DumpCommand do
   end
 
   it 'accepts the --offset <n> parameter with modicon addressing' do
-    client = mock 'client'
-    slave = mock 'slave'
+    client = double 'client'
+    slave = double 'slave'
     YAML.should_receive(:load_file).with('dump.yml').and_return(:host => '1.2.3.4', :port => 502, :slave => 5, :offset => 123, :data => [4, 5, 6])
     ModBus::TCPClient.should_receive(:connect).with('1.2.3.4', 502).and_yield(client)
     client.should_receive(:with_slave).with(5).and_yield(slave)
@@ -87,8 +87,8 @@ describe Modbus::Cli::DumpCommand do
   end
 
   it 'accepts the --offset <n> parameter with schneider addressing' do
-    client = mock 'client'
-    slave = mock 'slave'
+    client = double 'client'
+    slave = double 'slave'
     YAML.should_receive(:load_file).with('dump.yml').and_return(:host => '1.2.3.4', :port => 502, :slave => 5, :offset => 123, :data => [4, 5, 6])
     ModBus::TCPClient.should_receive(:connect).with('1.2.3.4', 502).and_yield(client)
     client.should_receive(:with_slave).with(5).and_yield(slave)
@@ -97,8 +97,8 @@ describe Modbus::Cli::DumpCommand do
   end
 
    it 'has a --debug flag' do
-    client = mock 'client'
-    slave = mock 'slave'
+    client = double 'client'
+    slave = double 'slave'
     YAML.should_receive(:load_file).with('dump.yml').and_return(:host => '1.2.3.4', :port => 502, :slave => 5, :offset => 400123, :data => [4, 5, 6])
     ModBus::TCPClient.should_receive(:connect).with('1.2.3.4', 502).and_yield(client)
     client.should_receive(:with_slave).with(5).and_yield(slave)

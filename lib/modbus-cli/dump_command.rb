@@ -7,15 +7,13 @@ module Modbus
       extend CommandsCommon::ClassMethods
       include CommandsCommon
 
-      parameter 'FILES ...', 'restore data in FILES to original devices (created by modbus read command)', :attribute_name => :files do |f|
-        f.map do |filename| 
-          YAML.load_file(filename).dup.tap do |ff|
-            #parameter takes presedence
-            ff[:host] = host || ff[:host]
-            ff[:port] = port || ff[:port]
-            ff[:slave] = slave || ff[:slave]
-            ff[:offset] = offset || ff[:offset]
-          end
+      parameter 'FILES ...', 'restore data in FILES to original devices (created by modbus read command)' do |f|
+        YAML.load_file(f).dup.tap do |ff|
+          #parameter takes presedence
+          ff[:host] = host || ff[:host]
+          ff[:port] = port || ff[:port]
+          ff[:slave] = slave || ff[:slave]
+          ff[:offset] = offset || ff[:offset]
         end
       end
 
@@ -34,12 +32,12 @@ module Modbus
       debug_option
 
       def execute
-        host_ids = files.map {|d| d[:host] }.sort.uniq
+        host_ids = files_list.map {|d| d[:host] }.sort.uniq
         host_ids.each {|host_id| execute_host host_id }
       end
 
       def execute_host(host_id)
-        slave_ids =   files.select {|d| d[:host] == host_id }.map {|d| d[:slave] }.sort.uniq
+        slave_ids =   files_list.select {|d| d[:host] == host_id }.map {|d| d[:slave] }.sort.uniq
         ModBus::TCPClient.connect(host_id, port) do |client|
           slave_ids.each {|slave_id| execute_slave host_id, slave_id, client }
         end
@@ -48,7 +46,7 @@ module Modbus
       def execute_slave(host_id, slave_id, client)
         client.with_slave(slave_id) do |slave|
             slave.debug = true if debug?
-            files.select {|d| d[:host] == host_id && d[:slave] == slave_id }.each do |file_data|
+            files_list.select {|d| d[:host] == host_id && d[:slave] == slave_id }.each do |file_data|
             execute_single_file slave, file_data
           end
         end

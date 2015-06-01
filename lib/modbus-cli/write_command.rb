@@ -16,19 +16,19 @@ module Modbus
       debug_option
       timeout_option
 
-      parameter 'VALUES ...', 'values to write, nonzero counts as true for discrete values', :attribute_name => :values do |vv|
+      parameter 'VALUES ...', 'values to write, nonzero counts as true for discrete values' do |v|
         case addr_type
 
         when :bit
-          int_parameter vv, 0, 1
+          int_parameter v, 0, 1
         when :word
-          int_parameter vv, 0, 0xffff
+          int_parameter v, 0, 0xffff
         when :int
-          int_parameter vv, -32768, 32767
+          int_parameter v, -32768, 32767
         when :dword
-          int_parameter vv, 0, 0xffffffff
+          int_parameter v, 0, 0xffffffff
         when :float
-          vv.map {|v| Float(v) }
+          Float(v)
         end
       end
 
@@ -55,11 +55,11 @@ module Modbus
       end
 
       def write_coils(sl)
-        sliced_write_coils sl, addr_offset, values
+        sliced_write_coils sl, addr_offset, values_list
       end
 
       def write_words(sl)
-        sliced_write_registers sl, addr_offset, values.pack('S*').unpack('S*')
+        sliced_write_registers sl, addr_offset, values_list.pack('S*').unpack('S*')
       end
 
       def write_floats(sl)
@@ -72,14 +72,12 @@ module Modbus
 
       def pack_and_write(sl, format)
         # the word ordering is wrong. calling reverse two times effectively swaps every pair
-        sliced_write_registers(sl, addr_offset, values.reverse.pack("#{format}*").unpack('n*').reverse)
+        sliced_write_registers(sl, addr_offset, values_list.reverse.pack("#{format}*").unpack('n*').reverse)
       end
 
       def int_parameter(vv, min, max)
-        vv.map {|v| Integer(v) }.tap do |values|
-          values.each do |v|
-            raise ArgumentError, "Value should be in the range #{min}..#{max}" unless (min..max).member? v
-          end
+        Integer(vv).tap do |v|
+          raise ArgumentError, "Value should be in the range #{min}..#{max}" unless (min..max).member? v
         end
       end
     end
