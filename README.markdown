@@ -9,6 +9,8 @@ move blocks in memory.
 
 [Home page]:http://www.github.com/tallakt/momdbus-cli
 
+[![Build Status](https://travis-ci.org/tallakt/modbus-cli.svg?branch=master)](https://travis-ci.org/tallakt/modbus-cli)
+
 Installation
 ------------
 
