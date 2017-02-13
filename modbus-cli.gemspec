@@ -22,6 +22,8 @@ Gem::Specification.new do |s|
   # s.add_development_dependency "rspec"
   s.add_runtime_dependency "rmodbus", '~> 1.2'
   s.add_runtime_dependency "clamp", '~> 0.6.5'
+  s.add_runtime_dependency "gserver", '~> 0.0'
   s.add_development_dependency "rspec", '~> 3.2'
   s.add_development_dependency "rake", '~> 0.9'
+  s.add_development_dependency "bundler", '~> 1.14'
 end
