@@ -84,6 +84,10 @@ module Modbus
         end
       end
 
+      def addr_area
+        address[:area]
+      end
+
 
       def schneider_match(address)
         schneider_match =  address.match /%M([FWD])?(\d+)/i
@@ -94,10 +98,13 @@ module Modbus
               result[:datatype] = :bit
             when 'W', 'w'
               result[:datatype] = :word
+              result[:area] = :holding_registers
             when 'F', 'f'
               result[:datatype] = :float
+              result[:area] = :holding_registers
             when 'D', 'd'
               result[:datatype] = :dword
+              result[:area] = :holding_registers
             end
           end
         end
@@ -109,9 +116,20 @@ module Modbus
           offset = address.to_i
           case offset
           when 1..99999
-            {:offset => offset - 1, :datatype => :bit, :format => :modicon}
+            { :offset => offset - 1,
+              :datatype => :bit,
+              :format => :modicon }
+          # 100001..199999 inputs are not supported
+          when 300001..399999
+            { :offset => offset - 300001,
+              :datatype => :word,
+              :format => :modicon,
+              :area => :input_registers }
           when 400001..499999
-            {:offset => offset - 400001, :datatype => :word, :format => :modicon}
+            { :offset => offset - 400001,
+              :datatype => :word,
+              :format => :modicon,
+              :area => :holding_registers }
           end
         end
       end

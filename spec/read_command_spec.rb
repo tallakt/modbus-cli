@@ -10,14 +10,19 @@ describe Modbus::Cli::ReadCommand do
     stub_tcpip
   end
 
-  it 'can read registers' do
+  it 'can read holding registers' do
     client, slave = standard_connect_helper '1.2.3.4', 502
     slave.should_receive(:read_holding_registers).with(100, 10).and_return((0..9).to_a)
     cmd.run %w(read 1.2.3.4 %MW100 10)
     stdout.should match(/^\s*%MW105\s*5$/)
   end
 
-
+  it 'can read input registers' do
+    client, slave = standard_connect_helper '1.2.3.4', 502
+    slave.should_receive(:read_input_registers).with(100, 10).and_return((0..9).to_a)
+    cmd.run %w(read 1.2.3.4 300101 10)
+    stdout.should match(/^\s*300106\s*5$/)
+  end
 
   it 'can read floating point numbers' do
     client, slave = standard_connect_helper '1.2.3.4', 502

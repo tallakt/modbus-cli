@@ -110,7 +110,14 @@ module Modbus
 
       def read_data_words(sl)
         result = []
-        read_range.each_slice(MAX_READ_WORD_COUNT) {|slice| result += sl.read_holding_registers(slice.first, slice.count) }
+        read_range.each_slice(MAX_READ_WORD_COUNT) do |slice|
+          case addr_area
+          when :input_registers
+            result += sl.read_input_registers(slice.first, slice.count)
+          else # assume holding registers
+            result += sl.read_holding_registers(slice.first, slice.count)
+          end
+        end
         result
       end
 
@@ -155,7 +162,12 @@ module Modbus
           when :bit
             (addr + 1).to_s
           when :word, :int
-            (addr + 400001).to_s
+            case addr_area
+            when :input_registers
+              (addr + 300001).to_s
+            else # default :read_holding_registers
+              (addr + 400001).to_s
+            end
           end
         end
       end
