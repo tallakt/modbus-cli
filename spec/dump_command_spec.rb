@@ -106,11 +106,4 @@ describe Modbus::Cli::DumpCommand do
     slave.should_receive(:debug=).with(true)
     cmd.run %w(dump --debug dump.yml)
   end
-
 end
-
-
-
-
-
-

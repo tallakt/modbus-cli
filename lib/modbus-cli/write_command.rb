@@ -15,6 +15,7 @@ module Modbus
       address_parameter
       debug_option
       timeout_option
+      connect_timeout_option
 
       parameter 'VALUES ...', 'values to write, nonzero counts as true for discrete values' do |v|
         case addr_type
@@ -35,7 +36,13 @@ module Modbus
 
 
       def execute
-        ModBus::TCPClient.connect(host, port) do |cl|
+        connect_args =
+          if connect_timeout
+            [host, port, {connect_timeout: connect_timeout}]
+          else
+            [host, port]
+          end
+        ModBus::TCPClient.connect(*connect_args) do |cl|
           cl.with_slave(slave) do |sl|
             sl.debug = true if debug?
             sl.read_retry_timeout = timeout if timeout

@@ -19,6 +19,7 @@ module Modbus
       option ["-o", "--output"], 'FILE', "write results to file FILE"
       debug_option
       timeout_option
+      connect_timeout_option
       
       parameter 'COUNT', 'number of data to read', :attribute_name => :count do |c|
         result = Integer(c)
@@ -73,7 +74,13 @@ module Modbus
       end
 
       def execute
-        ModBus::TCPClient.connect(host, port) do |cl|
+        connect_args =
+          if connect_timeout
+            [host, port, {connect_timeout: connect_timeout}]
+          else
+            [host, port]
+          end
+        ModBus::TCPClient.connect(*connect_args) do |cl|
           cl.with_slave(slave) do |sl|
             sl.debug = true if debug?
             sl.read_retry_timeout = timeout if timeout

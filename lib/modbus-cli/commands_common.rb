@@ -53,6 +53,12 @@ module Modbus
             Integer(t)
           end
         end
+
+        def connect_timeout_option
+          option ["-C", "--connect-timeout"], 'TIMEOUT', "Specify the timeout in seconds when connecting to TCP socket" do |t|
+            Integer(t)
+          end
+        end
       end
 
 
