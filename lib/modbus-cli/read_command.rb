@@ -168,7 +168,7 @@ module Modbus
           case addr_type
           when :bit
             (addr + 1).to_s
-          when :word, :int
+          when :word, :int, :dword, :float
             case addr_area
             when :input_registers
               (addr + 300001).to_s
