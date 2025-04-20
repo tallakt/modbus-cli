@@ -74,13 +74,15 @@ module Modbus
       end
 
       def execute
-        connect_args =
+        connect_lambda =
           if connect_timeout
-            [host, port, {connect_timeout: connect_timeout}]
+            Proc.new { |&block| ModBus::TCPClient.connect(host, port, connect_timeout: connect_timeout, &block) }
           else
-            [host, port]
+            Proc.new { |&block| ModBus::TCPClient.connect(host, port, &block) }
           end
-        ModBus::TCPClient.connect(*connect_args) do |cl|
+
+
+        connect_lambda.call do |cl|
           cl.with_slave(slave) do |sl|
             sl.debug = true if debug?
             sl.read_retry_timeout = timeout if timeout

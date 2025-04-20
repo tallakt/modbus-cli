@@ -117,7 +117,7 @@ describe Modbus::Cli::WriteCommand do
   end
 
   it 'has a --connect-timeout flag' do
-    ModBus::TCPClient.should_receive(:connect).with('X', 502, connect_timeout: 99)
+    ModBus::TCPClient.should_receive(:connect).with('X', 502, {connect_timeout: 99})
     cmd.run %w(write --connect-timeout 99 X %MW100 10)
   end
 end
