@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://www.github.com/tallakt/modbus-cli"
   s.summary     = %q{Modbus command line}
   s.description = %q{Command line interface to communicate over Modbus TCP}
+  s.license     = "MIT"
 
   s.rubyforge_project = "modbus-cli"
 
