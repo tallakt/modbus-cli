@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   # s.add_development_dependency "rspec"
-  s.add_runtime_dependency "rmodbus", '~> 1.3'
+  s.add_runtime_dependency "rmodbus", '~> 2.1'
   s.add_runtime_dependency "clamp", '~> 1.3'
   s.add_runtime_dependency "gserver", '~> 0.0'
   s.add_development_dependency "rspec", '~> 3.13'
